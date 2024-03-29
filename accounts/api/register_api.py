@@ -1,15 +1,15 @@
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accounts.serializers import UserSerializer
 from drf_spectacular.utils import extend_schema
-from accounts.models import CustomUser
-
+from django.core.mail import send_mail
 
 
 class RegisterAPIView(APIView):
     """
-    This is the api for for user register.
+    This is the api for user registeration.
+    handle the password match in the frontend.
     """
     serializer_class = UserSerializer
     def post(self, request):
