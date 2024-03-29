@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from datetime import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -41,3 +42,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.username    
+
+class PasswordResetToken(models.Model):
+    email = models.EmailField()
+    token = models.CharField()
+    expiration = models.DateTimeField()
+
+    def is_expired(self):
+        return self.expiration < timezone.now()
