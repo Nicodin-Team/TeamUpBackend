@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
     #Extera installed apps
     'accounts',
+    'projects',
     'drf_spectacular'
 ]
 
