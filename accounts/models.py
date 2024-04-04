@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from datetime import timezone
 
+GENDER_CHOICES = [
+    ('male', 'Male'),
+    ('female', 'Female'),
+]
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, password, **other_fields):
@@ -30,6 +34,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     created_at = models.DateField(auto_now_add = True)
+    gender = models.CharField(choices=GENDER_CHOICES)
+    age = models.IntegerField()
+    country = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -42,6 +51,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.username    
+
+class Skill(models.Model):
+    SKILL_LEVEL_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('lower_intermediate', 'Lower Intermediate'),
+        ('upper_intermediate', 'Upper Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+
+    name = models.CharField(max_length=100)
+    level = models.CharField(choices=SKILL_LEVEL_CHOICES)
+    user = models.ForeignKey(CustomUser, related_name='skills', on_delete=models.CASCADE)
 
 class PasswordResetToken(models.Model):
     email = models.EmailField()

@@ -12,7 +12,7 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    user = models.ManyToManyField(CustomUser, related_name='projects')
+    users = models.ManyToManyField(CustomUser, related_name='projects')
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=PROJECT_STATUS_CHOICES, default='active')
     description = models.TextField(null=True, blank=True)
