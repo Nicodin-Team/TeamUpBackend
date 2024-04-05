@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.core.paginator import Paginator
+from rest_framework.pagination import PageNumberPagination
 from accounts.serializers import UserSerializer, UserRegistrationSerializer
 from accounts.models import CustomUser
 
@@ -15,24 +15,26 @@ class GetUserAPIView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-################################################################################################
+
 class GetUsersListAPIView(APIView):
     """
     List the users with pagination through this API.
     """    
     permission_classes = [IsAuthenticated]
 
-    def get(self, page_num):
+    def get(self, request, page_num):        
         users = CustomUser.objects.all()
+        
         if not users:
-            return Response({'message':'No users found'}, status=status.HTTP_404_NOT_FOUND)
-        items_per_page = 2
-        paginator = Paginator(users, items_per_page)
-        page_objects = paginator(page_num)
-        serialized_data = UserSerializer(page_objects.object_list, many=True).data
+            return Response({'message': 'No users found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = 2
+        page_objects = paginator.paginate_queryset(users, request)
+        serialized_data = UserSerializer(page_objects, many=True).data
 
-        return Response(data=serialized_data, status= status.HTTP_200_OK)
-################################################################################################    
+        return paginator.get_paginated_response(serialized_data)
+
 
 class DeleteUserAPIView(generics.DestroyAPIView):
     """
