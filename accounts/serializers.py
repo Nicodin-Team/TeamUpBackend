@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Skill
 from django.contrib.auth.hashers import make_password
 
-class UserSerializer(serializers.ModelSerializer):     
+class UserRegistrationSerializer(serializers.ModelSerializer):     
     class Meta:
         model = CustomUser
-        fields = ['email', 'username', 'password','first_name', 'last_name']
+        fields = ['email', 'password', 'username', 'first_name', 'last_name', 'gender', 'age', 'country', 'city']
         extra_kwargs = {
-            'email': {'required': True},
+            'email': {'required': True,},
             'username': {'required': True},
             'password': {'required': True, 'write_only': True}
         }
@@ -17,6 +17,18 @@ class UserSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create(**validated_data)
         return user
     
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'created_at', 'gender', 'age', 'country', 'city']        
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ['name', 'level']
+
+
 class PasswordRecoverySerializer(serializers.Serializer):
     token = serializers.CharField(required = True)
     new_password = serializers.CharField(required = True)
@@ -25,8 +37,7 @@ class PasswordRecoverySerializer(serializers.Serializer):
     def validate(self, data):
         new_password = data.get('new_password')
         confirm_password = data.get('confirm_password')
-
-        # Check if new_password and confirm_password match
+        
         if new_password != confirm_password:
             raise serializers.ValidationError("Passwords do not match.")
 
