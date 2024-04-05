@@ -34,10 +34,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     created_at = models.DateField(auto_now_add = True)
-    gender = models.CharField(choices=GENDER_CHOICES)
-    age = models.IntegerField()
-    country = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
+    gender = models.CharField(choices=GENDER_CHOICES, null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
 
 
     is_active = models.BooleanField(default=False)
