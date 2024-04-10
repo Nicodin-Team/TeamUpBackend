@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from accounts.Pagination import MediumPage
 from accounts.serializers import UserSerializer, UserRegistrationSerializer
 from accounts.models import CustomUser
 
@@ -13,27 +13,17 @@ class GetUserAPIView(generics.RetrieveAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
-class GetUsersListAPIView(APIView):
+class GetUsersListAPIView(generics.ListAPIView):
     """
     List the users with pagination through this API.
     """    
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, page_num):        
-        users = CustomUser.objects.all()
-        
-        if not users:
-            return Response({'message': 'No users found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        paginator = PageNumberPagination()
-        paginator.page_size = 2
-        page_objects = paginator.paginate_queryset(users, request)
-        serialized_data = UserSerializer(page_objects, many=True).data
-
-        return paginator.get_paginated_response(serialized_data)
+    queryset = CustomUser.objects.all()
+    permission_classes = [AllowAny]
+    pagination_class = MediumPage
+    serializer_class = UserSerializer
 
 
 class DeleteUserAPIView(generics.DestroyAPIView):
