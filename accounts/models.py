@@ -72,3 +72,14 @@ class PasswordResetToken(models.Model):
 
     def is_expired(self):
         return self.expiration < timezone.now()
+    
+class Announcement(models.Model):
+    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    requirements = models.TextField()
+    how_many = models.IntegerField()
+    creation_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title    
