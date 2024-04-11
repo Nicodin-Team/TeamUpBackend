@@ -7,6 +7,7 @@ GENDER_CHOICES = [
     ('female', 'Female'),
 ]
 
+    
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, password, **other_fields):
         if not email:
@@ -52,6 +53,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return self.username    
 
+class Advertisement(models.Model):
+    # Define your Advertisement model fields here
+    Creator_id = models.IntegerField()
+    # Other fields...
+
+    def __str__(self):
+        return f"Advertisement {self.id}"
+    
 class Skill(models.Model):
     SKILL_LEVEL_CHOICES = [
         ('beginner', 'Beginner'),

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser, Skill
 from django.contrib.auth.hashers import make_password
+from accounts.models import Advertisement
 
 class UserRegistrationSerializer(serializers.ModelSerializer):     
     class Meta:
@@ -45,3 +46,8 @@ class PasswordRecoverySerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+class AdvertisementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advertisement
+        fields = '__all__'
