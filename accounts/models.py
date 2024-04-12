@@ -52,14 +52,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.username    
-
-class Advertisement(models.Model):
-    # Define your Advertisement model fields here
-    Creator_id = models.IntegerField()
-    # Other fields...
-
-    def __str__(self):
-        return f"Advertisement {self.id}"
     
 class Skill(models.Model):
     SKILL_LEVEL_CHOICES = [
@@ -81,3 +73,13 @@ class PasswordResetToken(models.Model):
 
     def is_expired(self):
         return self.expiration < timezone.now()
+    
+class Announcement(models.Model):
+    creator_id = models.IntegerField()
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'accounts_announcement'
