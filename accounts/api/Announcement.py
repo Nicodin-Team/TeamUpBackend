@@ -31,14 +31,17 @@ class AnnouncementAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def Update(self, request, pk):
-
         """
-        Update an existing announcement.
+        Update an existing announcement (only allowed for the owner).
         """
         try:
             announcement = Announcement.objects.get(pk=pk)
         except Announcement.DoesNotExist:
             return Response({"error": "Announcement not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the request user is the owner of the announcement
+        if announcement.creator_id != request.user.id:
+            return Response({"error": "You are not allowed to edit this announcement."}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = AnnouncementSerializer(announcement, data=request.data)
         if serializer.is_valid():
@@ -46,15 +49,18 @@ class AnnouncementAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def Delete(self, request, pk):
-        
+    def delete(self, request, pk):
         """
-        Delete an announcement.
+        Delete an announcement (only allowed for the owner).
         """
         try:
             announcement = Announcement.objects.get(pk=pk)
         except Announcement.DoesNotExist:
             return Response({"error": "Announcement not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the request user is the owner of the announcement
+        if announcement.creator_id != request.user.id:
+            return Response({"error": "You are not allowed to delete this announcement."}, status=status.HTTP_403_FORBIDDEN)
 
         announcement.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
