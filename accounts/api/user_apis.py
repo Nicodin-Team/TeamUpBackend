@@ -2,9 +2,11 @@ from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from accounts.Pagination import MediumPage
+from accounts.pagination import MediumPage
 from accounts.serializers import UserSerializer, UserRegistrationSerializer
 from accounts.models import CustomUser
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class GetUserAPIView(generics.RetrieveAPIView):
@@ -24,6 +26,9 @@ class GetUsersListAPIView(generics.ListAPIView):
     permission_classes = [AllowAny]
     pagination_class = MediumPage
     serializer_class = UserSerializer
+    filter_backends = [SearchFilter]
+    search_fields =  ['username', 'first_name', 'last_name']
+
 
 
 class DeleteUserAPIView(generics.DestroyAPIView):
@@ -68,3 +73,37 @@ class RegisterAPIView(APIView):
             return Response({'message': "New User Created"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class FilterUserAPIView(generics.ListAPIView):
+    """
+    Use this api to filter the user through some parameters such as age, skills, country , city and ...
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['min_age','max_age', 'gender', 'country', 'city', 'skills__name']
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        min_age = self.request.query_params.get('min_age')
+        max_age = self.request.query_params.get('max_age')
+        if min_age is not None:
+            queryset = queryset.filter(age__gte=min_age)
+        if max_age is not None:
+            queryset = queryset.filter(age__lte=max_age)
+
+        gender = self.request.query_params.get('gender')
+        if gender is not None:
+            queryset = queryset.filter(gender=gender)
+
+        skill = self.request.query_params.get('skills__name')
+        if skill is not None:
+            queryset = queryset.filetr(skill)
+        
+        search_query = self.request.query_params.get('search')
+        if search_query is not None:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        return queryset
