@@ -10,6 +10,7 @@ class AnnouncementAPIView(APIView):
     API endpoint for Announcement CRUD operations.
     """
    
+   
     def get(self, request):
         """
         Retrieve ads based on the employer/user ID.
