@@ -75,11 +75,6 @@ class PasswordResetToken(models.Model):
         return self.expiration < timezone.now()
     
 class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
     creator_id = models.IntegerField()
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'accounts_announcement'
