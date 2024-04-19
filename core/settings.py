@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     #Extera installed apps
     'accounts',
     'projects',
-    'drf_spectacular'
+    'drf_spectacular',
+    'corsheaders', 
 ]
 
 MIDDLEWARE = [
@@ -42,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -71,9 +73,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nic',
-        'USER': 'postgres',
-        'PASSWORD': '7630',        
+        'NAME': 'TeamUpDataBase',
+        'USER': 'TeamUp',
+        'PASSWORD': '4022',        
     }
 }
 
