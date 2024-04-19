@@ -50,5 +50,5 @@ class PasswordResetSerializer(serializers.Serializer):
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
-        fields = ['id', 'creator_id', 'title', 'content', 'created_at', 'updated_at']
+        fields = 'all'
         
