@@ -46,7 +46,9 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
+
 ROOT_URLCONF = 'core.urls'
+CORS_ALLOWED_ALL_ORIGINS = True
 
 TEMPLATES = [
     {

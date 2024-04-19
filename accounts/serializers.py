@@ -50,5 +50,5 @@ class PasswordResetSerializer(serializers.Serializer):
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
-        fields = 'all'
+        fields = "__all__"
         
