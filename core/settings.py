@@ -1,6 +1,8 @@
 from pathlib import Path
 from datetime import timedelta
 from django.conf import settings
+from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,11 +11,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0e0c85d8b3b8a7c59b83dc66fd25f5021136bec8ebc1f1c5330c8f50e7fc4ac826a9dca0e30498d979a5a110f6e9daad1b74'
+deploy = True
+if(deploy):
+    # deploy
+    SECRET_KEY = os.getenv('SECRET_KEY', 'LIARA_URL is not set.')
+    DEBUG = os.getenv('DEBUG', 'LIARA_URL is not set.')
+    
+else:
+    # local
+    SECRET_KEY = config('SECRET_KEY')        
+    DEBUG = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -27,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 
     #Extera installed apps
     'accounts',
@@ -74,15 +83,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-  'default': {
-      'ENGINE': 'django.db.backends.postgresql',
-      'USER': 'root',
-      'PASSWORD': 'Th426NvAV9zUJvM6ZdpO24ET',
-      'HOST': 'teamupdatabase',
-      'PORT': '5432',
-  }
-}
+
+if(deploy):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('database_name', 'LIARA_URL is not set.'),
+            'USER': os.getenv('database_username', 'LIARA_URL is not set.'),
+            'PASSWORD': os.getenv('password', 'LIARA_URL is not set.'),
+            'HOST': os.getenv('database_hostname_or_ip', 'LIARA_URL is not set.'),
+            'PORT': os.getenv('database_port', 'LIARA_URL is not set.'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
 
 
 # Password validation
