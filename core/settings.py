@@ -73,12 +73,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'TeamUpDataBase',
-        'USER': 'TeamUp',
-        'PASSWORD': '4022',        
-    }
+  'default': {
+      'ENGINE': 'django.db.backends.postgresql',
+      'USER': 'root',
+      'PASSWORD': 'Th426NvAV9zUJvM6ZdpO24ET',
+      'HOST': 'teamupdatabase',
+      'PORT': '5432',
+  }
 }
 
 
