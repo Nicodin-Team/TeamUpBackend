@@ -7,7 +7,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 DOMAIN = "http://localhost:8000"
-print(BASE_DIR)
+
 
 
 # Quick-start development settings - unsuitable for production
