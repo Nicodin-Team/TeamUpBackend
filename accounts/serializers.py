@@ -6,7 +6,7 @@ from .models import Announcement
 class UserRegistrationSerializer(serializers.ModelSerializer):     
     class Meta:
         model = CustomUser
-        fields = ['profile_phot', 'email', 'password', 'username', 'first_name', 'last_name', 'gender', 'age', 'country', 'city']
+        fields = ['email', 'password', 'username', 'first_name', 'last_name', 'gender', 'age', 'country', 'city']
         extra_kwargs = {
             'email': {'required': True,},
             'username': {'required': True},

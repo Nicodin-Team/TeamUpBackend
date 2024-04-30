@@ -40,7 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     created_at = models.DateField(auto_now_add = True)
-    gender = models.CharField(choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=100, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
     country = models.CharField(max_length=50, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
@@ -68,12 +68,12 @@ class Skill(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    level = models.CharField(choices=SKILL_LEVEL_CHOICES)
+    level = models.CharField(choices=SKILL_LEVEL_CHOICES, max_length=100)
     user = models.ForeignKey(CustomUser, related_name='skills', on_delete=models.CASCADE)
 
 class PasswordResetToken(models.Model):
     email = models.EmailField()
-    token = models.CharField()
+    token = models.CharField(max_length=100)
     expiration = models.DateTimeField()
 
     def is_expired(self):
