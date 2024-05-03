@@ -6,12 +6,14 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DOMAIN = "http://localhost:8000"
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-deploy = True
+deploy = False
 if(deploy):
     # deploy
     SECRET_KEY = os.getenv('SECRET_KEY', 'LIARA_URL is not set.')
@@ -19,7 +21,7 @@ if(deploy):
     
 else:
     # local
-    SECRET_KEY = config('SECRET_KEY')        
+    SECRET_KEY = config('SECRET_KEY')
     DEBUG = True
 
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'projects',
     'drf_spectacular',
     'corsheaders', 
+    'resources',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +104,7 @@ else:
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
-    }
+    }   
 
 
 
@@ -140,7 +143,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = '/static/'
 STATIC_URL = 'static/'
+
+MEDIA_URL = 'images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, )
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

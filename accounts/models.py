@@ -7,7 +7,6 @@ GENDER_CHOICES = [
     ('female', 'Female'),
 ]
 
-    
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, password, **other_fields):
         if not email:
@@ -30,12 +29,14 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, username, password, **otherfields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    photo = models.ImageField(upload_to='media/users/%Y/%m/%d')
+    bio = models.CharField(max_length=500)
     email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     created_at = models.DateField(auto_now_add = True)
-    gender = models.CharField(choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=100, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
     country = models.CharField(max_length=50, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
@@ -63,12 +64,12 @@ class Skill(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    level = models.CharField(choices=SKILL_LEVEL_CHOICES)
+    level = models.CharField(choices=SKILL_LEVEL_CHOICES, max_length=100)
     user = models.ForeignKey(CustomUser, related_name='skills', on_delete=models.CASCADE)
 
 class PasswordResetToken(models.Model):
     email = models.EmailField()
-    token = models.CharField()
+    token = models.CharField(max_length=100)
     expiration = models.DateTimeField()
 
     def is_expired(self):
