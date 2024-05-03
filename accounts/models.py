@@ -7,7 +7,6 @@ GENDER_CHOICES = [
     ('female', 'Female'),
 ]
 
-    
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, password, **other_fields):
         if not email:
@@ -29,12 +28,9 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, username, password, **otherfields)
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return f'user_{instance.id}/{filename}'
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    profile_photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
+    photo = models.ImageField(upload_to='media/users/%Y/%m/%d')
+    bio = models.CharField(max_length=500)
     email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
