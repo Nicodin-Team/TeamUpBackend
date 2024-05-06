@@ -13,7 +13,7 @@ DOMAIN = "http://localhost:8000"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-deploy = True
+deploy = False
 if(deploy):
     # deploy
     SECRET_KEY = "0e0c85d8b3b8a7c59b83dc66fd25f5021136bec8ebc1f1c5330c8f50e7fc4ac826a9dca0e30498d979a5a110f6e9daad1b74"
@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'rest_framework',
 
     #Extera installed apps
-    'accounts',
-    'projects',
+    'accounts',    
     'drf_spectacular',
     'corsheaders', 
     'resources',
+    'announcements',
 ]
 
 MIDDLEWARE = [
