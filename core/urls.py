@@ -11,8 +11,8 @@ urlpatterns = [
     path('api/schema/docs/', SpectacularSwaggerView.as_view(url_name='schema')),        
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),    
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('accounts/', include('accounts.urls')),    
-    path('projects/', include('projects.urls')),    
+    path('accounts/', include('accounts.urls')),        
     path('resources/',include('resources.urls')),
+    path('announcements/',include('announcements.urls')),
 ]   
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
