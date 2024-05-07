@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.filters import SearchFilter
 
 class AnnouncementPagination(PageNumberPagination):
     page_size = 10
@@ -27,6 +27,9 @@ class AnnnouncementViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
+    filter_backends = [SearchFilter]
+    search_fields =  ['title']
+    
 
 class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     """
