@@ -20,7 +20,8 @@ class AnnouncementPagination(PageNumberPagination):
 
 class AnnnouncementViewSet(viewsets.ModelViewSet):
     """
-    Through these apis users can \n- updata \n -creation \n -deletion \n -listing \n -retreive \nthe announcements objects.\n
+    Announcements CRUD\n 
+    Through these apis users can: \n- updata \n- creation \n- deletion \n- listing \n- retreive \n the announcements objects.\n
     Operations that are not in SafeMethods need owner permission.
     """
     permission_classes = [IsOwnerOrReadOnly]
@@ -36,7 +37,7 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     pagination_class = AnnouncementPagination
     def get(self, request):
         user = request.user
-        announcements = Announcement.objects.filter(owner=user).order_by('-created_at')
+        announcements = Announcement.objects.filter(user=user).order_by('-created_at')
         data = self.serializer_class(announcements, many=True).data
 
         return Response({'data': data}, status=status.HTTP_200_OK)
