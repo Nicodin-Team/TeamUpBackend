@@ -50,7 +50,7 @@ class UpdateUserAPIView(APIView):
     """    
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = [MultiPartParser, FormParser]
 
     def patch(self, request):
         user = request.user
