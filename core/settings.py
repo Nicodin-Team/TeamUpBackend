@@ -1,19 +1,29 @@
 from pathlib import Path
 from datetime import timedelta
 from django.conf import settings
+from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DOMAIN = "http://localhost:8000"
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3xftyn#ykjnxu!6bcu(_duf5v@qlc=yg81@tgmp5p0aqxtbpvh'
+deploy = False
+if(deploy):
+    # deploy
+    SECRET_KEY = "0e0c85d8b3b8a7c59b83dc66fd25f5021136bec8ebc1f1c5330c8f50e7fc4ac826a9dca0e30498d979a5a110f6e9daad1b74"
+    DEBUG = os.getenv('DEBUG', 'LIARA_URL is not set.')
+    
+else:
+    # local
+    SECRET_KEY = config('SECRET_KEY')
+    DEBUG = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -27,28 +37,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 
     #Extera installed apps
-    'accounts',
-    'projects',
+    'accounts',    
     'drf_spectacular',
     'corsheaders', 
+    'resources',
+    'announcements',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 
 ROOT_URLCONF = 'core.urls'
 CORS_ALLOWED_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL=True
+ALLOWED_HOSTS = ["*",]
 
 TEMPLATES = [
     {
@@ -72,14 +86,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'TeamUpDataBase',
-        'USER': 'TeamUp',
-        'PASSWORD': '4022',        
+
+if(deploy):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('database_name', 'LIARA_URL is not set.'),
+            'USER': os.getenv('database_username', 'LIARA_URL is not set.'),
+            'PASSWORD': os.getenv('password', 'LIARA_URL is not set.'),
+            'HOST': os.getenv('database_hostname_or_ip', 'LIARA_URL is not set.'),
+            'PORT': os.getenv('database_port', 'LIARA_URL is not set.'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }   
+
+
 
 
 # Password validation
@@ -116,7 +143,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = '/static/'
 STATIC_URL = 'static/'
+
+MEDIA_URL = 'images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, )
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

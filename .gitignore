@@ -1,2 +1,4 @@
+.env
 env
 schema.yml
+db.sqlite3
