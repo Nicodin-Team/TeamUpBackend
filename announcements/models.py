@@ -9,8 +9,3 @@ class Announcement(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateField(auto_now_add = True,blank=True, null=True)
     active = models.BooleanField(default=True)
-
-class JoinRequest(models.Model):
-    announcement = models.ForeignKey('Announcement', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=(('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')))
