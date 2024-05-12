@@ -1,12 +1,13 @@
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListAPIView
-from rest_framework.response import Response 
+from rest_framework.response import Response
 from rest_framework import status
 from announcements.models import Announcement
 from announcements.serializers import AnnouncementSerializer
 from rest_framework.generics import CreateAPIView , GenericAPIView
 from rest_framework.response import  Response
 from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
@@ -20,7 +21,8 @@ class AnnouncementPagination(PageNumberPagination):
 
 class AnnnouncementViewSet(viewsets.ModelViewSet):
     """
-    Through these apis users can \n- updata \n -creation \n -deletion \n -listing \n -retreive \nthe announcements objects.\n
+    Announcements CRUD\n 
+    Through these apis users can: \n- updata \n- creation \n- deletion \n- listing \n- retreive \n the announcements objects.\n
     Operations that are not in SafeMethods need owner permission.
     """
     permission_classes = [IsOwnerOrReadOnly]
@@ -28,6 +30,7 @@ class AnnnouncementViewSet(viewsets.ModelViewSet):
     serializer_class = AnnouncementSerializer
     filter_backends = [SearchFilter]
     search_fields =  ['title']
+    
 
 class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     """
@@ -38,8 +41,8 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     pagination_class = AnnouncementPagination
     def get(self, request):
         user = request.user
-        announcements = Announcement.objects.filter(owner=user).order_by('-created_at')
+        announcements = Announcement.objects.filter(user=user).order_by('-created_at')
         data = self.serializer_class(announcements, many=True).data
 
         return Response({'data': data}, status=status.HTTP_200_OK)
-    
+
