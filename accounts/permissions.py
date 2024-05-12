@@ -12,3 +12,14 @@ class IsOwnerOrReadOnly(BasePermission):
 
         # Write permissions are only allowed to the owner of the object.
         return obj.user == request.user
+    
+
+
+class IsManagerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow read-only permissions for any request.
+        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return True
+        
+        # Check if the user is the manager of the announcement.
+        return obj.manager == request.user    
