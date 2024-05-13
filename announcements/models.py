@@ -1,5 +1,7 @@
 from django.db import models
 from accounts.models import CustomUser
+from django.conf import settings
+from django.contrib.auth.models import User
 
 class Announcement(models.Model):
     user =  models.ForeignKey(CustomUser, related_name='announcements', on_delete=models.CASCADE, null = True)
