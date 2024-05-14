@@ -9,3 +9,11 @@ class Announcement(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateField(auto_now_add = True,blank=True, null=True)
     active = models.BooleanField(default=True)
+
+
+class Manager(models.Model):
+    name = models.CharField(max_length=255)
+    scores = models.ManyToManyField('Score')
+    
+class Score(models.Model):
+    value = models.FloatField()
