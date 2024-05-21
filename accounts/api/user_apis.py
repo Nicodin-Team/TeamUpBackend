@@ -109,3 +109,7 @@ class FilterUserAPIView(generics.ListAPIView):
             queryset = queryset.filter(name__icontains=search_query)
 
         return queryset
+    
+
+
+

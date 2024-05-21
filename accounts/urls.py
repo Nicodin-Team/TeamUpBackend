@@ -10,5 +10,5 @@ urlpatterns = [
     path('users/delete/', DeleteUserAPIView.as_view(), name='get_user'),
     path('users/update/', UpdateUserAPIView.as_view(), name='update_user'),
     path('skills/', SkillsAPIViews.as_view(), name='skills'),
-    path('skills/delete/<int:skill_id>', DeleteSkillAPIView.as_view(), name='delete_skill'),    
+    path('skills/delete/<int:skill_id>', DeleteSkillAPIView.as_view(), name='delete_skill'),  
 ]

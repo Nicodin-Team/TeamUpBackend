@@ -8,14 +8,14 @@ class AnnouncementSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ScoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Score
-        fields = ['score']
-
 class ManagerSerializer(serializers.ModelSerializer):
-    scores = ScoreSerializer(many=True)
+    average_score = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Manager
-        fields = ['id', 'name', 'scores']
+        fields = ('id', 'name', 'average_score')
+
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Score
+        fields = ('id', 'manager', 'value', 'date')
