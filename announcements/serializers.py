@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from announcements.models import Announcement, JoinRequest
+from announcements.models import Announcement
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
@@ -9,7 +9,3 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
 
 
-class RequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = JoinRequest
-        fields = '__all__'

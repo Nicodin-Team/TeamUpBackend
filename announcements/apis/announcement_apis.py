@@ -1,14 +1,10 @@
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from announcements.models import Announcement, JoinRequest
-from announcements.serializers import AnnouncementSerializer, RequestSerializer
-from rest_framework.generics import CreateAPIView , GenericAPIView
+from announcements.models import Announcement
+from announcements.serializers import AnnouncementSerializer
 from rest_framework.response import  Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
@@ -46,52 +42,44 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
 
         return Response({'data': data}, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def send_join_request(request, announcement_id):
-    announcement = Announcement.objects.get(id=announcement_id)
-    join_request = JoinRequest(user=request.user, announcement=announcement)
-    join_request.save()
-    serializer = RequestSerializer(join_request)
-    if serializer.is_valid( ) : 
-        data = serializer.validated_data 
-        return Response( data , status=status.HTTP_200_OK )
-    else : 
-        return Response( status = status.HTTP_400_BADREQUEST  )
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def manage_join_request(request, request_id):
-    join_request = JoinRequest.objects.get(id=request_id)
+
+
+from django.shortcuts import render
+from announcements.models import AnnouncementApply, Announcement
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import CreateView
+from announcements.forms import AnnouncementForm, AnnouncementApplyForm
+from django.db.models import Q, F
+from django.db.models.aggregates import Sum, Min, Max, Count, Avg
+#brings the normal get but with error handling 404
+from django.shortcuts import get_object_or_404
+
+
+class JobApply(CreateView):
+    model = AnnouncementApply
+    success_url = '/jobs'
+    #fields = ['username', 'email', 'linkedIn_url', 'githup_url', 'cv', 'cover_letter']
+    form_class = AnnouncementApplyForm
+
+    def form_valid(self, form):
+        # Get the job slug from the URL
+        Announcement_slug = self.kwargs.get('slug')
+
+        # Retrieve the job associated with the slug
+        announcements = get_object_or_404(Announcement, slug=Announcement_slug)
+
+        # Set the job field in the form to the retrieved job
+        form.instance.announcements = announcements
+
+        # Save the form and set the success_url
+        response = super().form_valid(form)
+
+        return response
     
-    # Check if the user is the manager of the announcement
-    if request.user == join_request.announcement.manager:
-        action = request.data.get('action')
-        if action == 'accept':
-            join_request.status = 'accepted'
-            join_request.save()
-            return Response({'message': 'Request accepted'}, status=status.HTTP_200_OK)
-        elif action == 'reject':
-            join_request.status = 'rejected'
-            join_request.save()
-            return Response({'message': 'Request rejected'}, status=status.HTTP_200_OK)
-    return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class AddAnnouncement(CreateView):
+    model = Announcement
+    #fields = ['title', 'location', 'company', 'salary_start', 'salary_end', 'description', 'vacancy', 'job_type', 'experience', 'category']
+    success_url = '/Announcement/'
+    form_class = AnnouncementForm
