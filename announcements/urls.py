@@ -11,7 +11,7 @@ router.register(prefix=r"announcements", viewset=AnnnouncementViewSet, basename=
 urlpatterns = [
     path('', include(router.urls)),
     path("mine/",MyAnnouncementsAPIView.as_view(), name="my_announcements"),
-    path('announcements/<int:announcement_id>/join/', AnnouncementJoinView.as_view(), name='announcement-join'),
-    path('announcements/join-requests/', AnnouncementJoinRequestManagementView.as_view(), name='announcement-join-requests'),
-
+    path('<int:announcement_id>/join/', AnnouncementJoinView.as_view(), name='announcement-join'),
+    path('announcement-join-requests/', AnnouncementJoinRequestManagementView.as_view(), name='announcement-join-requests'),
+    path('announcement-join-requests/<int:request_id>/', AnnouncementJoinRequestManagementView.as_view(), name='manage-join-request'),
 ]

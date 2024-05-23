@@ -74,9 +74,13 @@ class AnnouncementJoinRequestManagementView(APIView):
         user = self.request.user
         return AnnouncementJoinRequest.objects.filter(announcement__creator=user)
 
-    def get(self, request):
-        join_requests = self.get_queryset()
-        serializer = AnnouncementJoinRequestSerializer(join_requests, many=True)
+    def get(self, request, request_id):
+        try:
+            join_request = AnnouncementJoinRequest.objects.get(pk=request_id)
+        except AnnouncementJoinRequest.DoesNotExist:
+            return Response({'error': 'Join request not found'}, status=404)
+
+        serializer = AnnouncementJoinRequestSerializer(join_request)
         return Response(serializer.data)
 
     def patch(self, request, request_id):
@@ -85,7 +89,8 @@ class AnnouncementJoinRequestManagementView(APIView):
         except AnnouncementJoinRequest.DoesNotExist:
             return Response({'error': 'Join request not found'}, status=404)
 
-        if join_request.announcement.creator != request.user:
+        announcement = join_request.announcement
+        if announcement.user != request.user:
             return Response({'error': 'You are not authorized to manage this join request'}, status=403)
 
         if request.data.get('status') not in ['ACCEPTED', 'REJECTED']:
