@@ -18,9 +18,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
     
 class UserSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['photo', 'bio', 'username', 'first_name', 'last_name', 'created_at', 'gender', 'age', 'country', 'city']        
+        fields = ['photo', 'bio', 'username', 'first_name', 'last_name', 'created_at', 'gender', 'age', 'country', 'city']
 
 
 class SkillSerializer(serializers.ModelSerializer):
