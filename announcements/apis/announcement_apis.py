@@ -7,7 +7,7 @@ from rest_framework.response import  Response
 from rest_framework import viewsets
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 
@@ -67,36 +67,22 @@ class AnnouncementJoinView(APIView):
     
 
     
-class AnnouncementJoinRequestManagementView(APIView):
-    permission_classes = [IsAuthenticated]
+class AnnouncementJoinRequestActionView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def get_queryset(self):
-        user = self.request.user
-        return AnnouncementJoinRequest.objects.filter(announcement__creator=user)
-
-    def get(self, request, request_id):
+    def post(self, request, join_request_id, action):
         try:
-            join_request = AnnouncementJoinRequest.objects.get(pk=request_id)
+            join_request = AnnouncementJoinRequest.objects.get(pk=join_request_id)
         except AnnouncementJoinRequest.DoesNotExist:
             return Response({'error': 'Join request not found'}, status=404)
 
-        serializer = AnnouncementJoinRequestSerializer(join_request)
-        return Response(serializer.data)
-
-    def patch(self, request, request_id):
-        try:
-            join_request = AnnouncementJoinRequest.objects.get(pk=request_id)
-        except AnnouncementJoinRequest.DoesNotExist:
-            return Response({'error': 'Join request not found'}, status=404)
-
-        announcement = join_request.announcement
-        if announcement.user != request.user:
-            return Response({'error': 'You are not authorized to manage this join request'}, status=403)
-
-        if request.data.get('status') not in ['ACCEPTED', 'REJECTED']:
-            return Response({'error': 'Invalid status. Valid options are ACCEPTED or REJECTED.'}, status=400)
-
-        join_request.status = request.data['status']
-        join_request.save()
-        serializer = AnnouncementJoinRequestSerializer(join_request)
-        return Response(serializer.data)
+        if action == 'accept':
+            join_request.status = 'accepted'
+            join_request.save()
+            return Response({'message': 'Join request accepted'}, status=200)
+        elif action == 'reject':
+            join_request.status = 'rejected'
+            join_request.save()
+            return Response({'message': 'Join request rejected'}, status=200)
+        else:
+            return Response({'error': 'Invalid action'}, status=400)
