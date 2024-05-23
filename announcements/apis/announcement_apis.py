@@ -1,14 +1,15 @@
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
-from announcements.models import Announcement
-from announcements.serializers import AnnouncementSerializer
+from announcements.models import Announcement, AnnouncementJoinRequest
+from announcements.serializers import AnnouncementSerializer, AnnouncementJoinRequestSerializer
 from rest_framework.response import  Response
 from rest_framework import viewsets
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
+from rest_framework.views import APIView
 
 class AnnouncementPagination(PageNumberPagination):
     page_size = 10
@@ -45,41 +46,52 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
 
 
 
+class AnnouncementJoinView(APIView):
+    permission_classes = [IsAuthenticated]
 
-from django.shortcuts import render
-from announcements.models import AnnouncementApply, Announcement
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import CreateView
-from announcements.forms import AnnouncementForm, AnnouncementApplyForm
-from django.db.models import Q, F
-from django.db.models.aggregates import Sum, Min, Max, Count, Avg
-#brings the normal get but with error handling 404
-from django.shortcuts import get_object_or_404
+    def post(self, request, announcement_id):
+        try:
+            announcement = Announcement.objects.get(pk=announcement_id)
+        except Announcement.DoesNotExist:
+            return Response({'error': 'Announcement not found'}, status=404)
 
+        user = request.user
 
-class JobApply(CreateView):
-    model = AnnouncementApply
-    success_url = '/jobs'
-    #fields = ['username', 'email', 'linkedIn_url', 'githup_url', 'cv', 'cover_letter']
-    form_class = AnnouncementApplyForm
+        # Check if user has already requested to join
+        if AnnouncementJoinRequest.objects.filter(user=user, announcement=announcement).exists():
+            return Response({'error': 'You have already requested to join this announcement.'}, status=400)
 
-    def form_valid(self, form):
-        # Get the job slug from the URL
-        Announcement_slug = self.kwargs.get('slug')
-
-        # Retrieve the job associated with the slug
-        announcements = get_object_or_404(Announcement, slug=Announcement_slug)
-
-        # Set the job field in the form to the retrieved job
-        form.instance.announcements = announcements
-
-        # Save the form and set the success_url
-        response = super().form_valid(form)
-
-        return response
+        join_request = AnnouncementJoinRequest.objects.create(user=user, announcement=announcement)
+        serializer = AnnouncementJoinRequestSerializer(join_request)
+        return Response(serializer.data, status=201)  # Created
     
-class AddAnnouncement(CreateView):
-    model = Announcement
-    #fields = ['title', 'location', 'company', 'salary_start', 'salary_end', 'description', 'vacancy', 'job_type', 'experience', 'category']
-    success_url = '/Announcement/'
-    form_class = AnnouncementForm
+
+    
+class AnnouncementJoinRequestManagementView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return AnnouncementJoinRequest.objects.filter(announcement__creator=user)
+
+    def get(self, request):
+        join_requests = self.get_queryset()
+        serializer = AnnouncementJoinRequestSerializer(join_requests, many=True)
+        return Response(serializer.data)
+
+    def patch(self, request, request_id):
+        try:
+            join_request = AnnouncementJoinRequest.objects.get(pk=request_id)
+        except AnnouncementJoinRequest.DoesNotExist:
+            return Response({'error': 'Join request not found'}, status=404)
+
+        if join_request.announcement.creator != request.user:
+            return Response({'error': 'You are not authorized to manage this join request'}, status=403)
+
+        if request.data.get('status') not in ['ACCEPTED', 'REJECTED']:
+            return Response({'error': 'Invalid status. Valid options are ACCEPTED or REJECTED.'}, status=400)
+
+        join_request.status = request.data['status']
+        join_request.save()
+        serializer = AnnouncementJoinRequestSerializer(join_request)
+        return Response(serializer.data)
