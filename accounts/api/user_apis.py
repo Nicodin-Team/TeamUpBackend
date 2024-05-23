@@ -10,6 +10,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
+class UserByTokenAPIView(APIView):
+        permission_classes = [IsAuthenticated]
+        def get(self, request):
+            user = request.user
+            serializer = UserSerializer(user)
+
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
 class GetUserAPIView(generics.RetrieveAPIView):
     """
     Retrive a single user's information through this API.
