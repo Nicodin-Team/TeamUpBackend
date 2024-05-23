@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Skill
+from .models import CustomUser, Skill, Manager, Score
 from django.contrib.auth.hashers import make_password
 
 class UserRegistrationSerializer(serializers.ModelSerializer):     
@@ -49,8 +49,24 @@ class PasswordResetSerializer(serializers.Serializer):
 
         
 
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Score
+        fields = ['value']
 
+class ManagerSerializer(serializers.ModelSerializer):
+    scores = ScoreSerializer(many=True, read_only=True)
+    average_score = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Manager
+        fields = ['name', 'scores', 'average_score']
+
+    def get_average_score(self, obj):
+        scores = obj.scores.all()
+        if scores:
+            return sum(score.value for score in scores) / len(scores)
+        return 0
 
 
 

@@ -75,7 +75,10 @@ class PasswordResetToken(models.Model):
     def is_expired(self):
         return self.expiration < timezone.now()
 
+class Manager(models.Model):
+    name = models.CharField(max_length=255)
+    scores = models.ManyToManyField('Score', related_name='managers')
 
-
-
-
+class Score(models.Model):
+    value = models.IntegerField()
+    manager = models.ForeignKey('Manager', on_delete=models.CASCADE)
