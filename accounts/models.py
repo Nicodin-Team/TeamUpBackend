@@ -74,8 +74,3 @@ class PasswordResetToken(models.Model):
 
     def is_expired(self):
         return self.expiration < timezone.now()
-
-
-
-
-
