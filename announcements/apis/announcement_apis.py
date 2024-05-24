@@ -5,20 +5,13 @@ from announcements.models import Announcement, AnnouncementJoinRequest
 from announcements.serializers import AnnouncementSerializer, AnnouncementJoinRequestSerializer
 from rest_framework.response import  Response
 from rest_framework import viewsets
-<<<<<<< HEAD
+
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
-=======
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.decorators import action
-from rest_framework import status, viewsets, generics
-from accounts.permissions import IsOwnerOrReadOnly
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter
->>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
+
 
 class AnnouncementPagination(PageNumberPagination):
     page_size = 10
@@ -52,7 +45,7 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
 
         return Response({'data': data}, status=status.HTTP_200_OK)
 
-<<<<<<< HEAD
+
 
 
 
@@ -96,5 +89,4 @@ class AnnouncementJoinRequestActionView(APIView):
             return Response({'message': 'Join request rejected'}, status=200)
         else:
             return Response({'error': 'Invalid action'}, status=400)
-=======
->>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
+
