@@ -6,6 +6,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         fields = "__all__"
+<<<<<<< HEAD
 
 class AnnouncementJoinRequestSerializer(serializers.ModelSerializer):
     announcement_title = serializers.CharField(source='announcement.title', read_only=True)
@@ -16,3 +17,5 @@ class AnnouncementJoinRequestSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'announcement', 'status', 'created_at', 'announcement_title', 'user_username')
 
 
+=======
+>>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880

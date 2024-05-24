@@ -7,7 +7,16 @@ from accounts.serializers import UserSerializer, UserRegistrationSerializer
 from accounts.models import CustomUser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.parsers import MultiPartParser, FormParser
 
+
+class UserByTokenAPIView(APIView):
+        permission_classes = [IsAuthenticated]
+        def get(self, request):
+            user = request.user
+            serializer = UserSerializer(user)
+
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
 class GetUserAPIView(generics.RetrieveAPIView):
     """
@@ -45,10 +54,11 @@ class DeleteUserAPIView(generics.DestroyAPIView):
 
 class UpdateUserAPIView(APIView):
     """
-    Delete a single user's information through this API.
+    Update a single user's information through this API.
     """    
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def patch(self, request):
         user = request.user

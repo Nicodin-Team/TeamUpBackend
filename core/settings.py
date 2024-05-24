@@ -13,7 +13,7 @@ DOMAIN = "http://localhost:8000"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-deploy = False
+deploy = True
 if(deploy):
     # deploy
     SECRET_KEY = "0e0c85d8b3b8a7c59b83dc66fd25f5021136bec8ebc1f1c5330c8f50e7fc4ac826a9dca0e30498d979a5a110f6e9daad1b74"
@@ -63,6 +63,8 @@ ROOT_URLCONF = 'core.urls'
 CORS_ALLOWED_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL=True
 ALLOWED_HOSTS = ["*",]
+
+
 
 TEMPLATES = [
     {
@@ -169,11 +171,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',    
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

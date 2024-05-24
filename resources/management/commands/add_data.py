@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = "Add data from excel into the database"
 
     def handle(self, *args, **options):
-        data = pd.read_csv("cities.csv")
+        data = pd.read_csv("ir.csv")
         
         if deploy:        
             database_url = "postgresql://{user}:{password}@{host}:{port}/{name}".format(

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from accounts.models import CustomUser
+<<<<<<< HEAD
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
@@ -9,6 +10,10 @@ from django.core.validators import FileExtensionValidator
 
 
 User = get_user_model()
+=======
+from django.conf import settings
+from django.contrib.auth.models import User
+>>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
 
 class Announcement(models.Model):
     user =  models.ForeignKey(CustomUser, related_name='announcements', on_delete=models.CASCADE, null = True)
