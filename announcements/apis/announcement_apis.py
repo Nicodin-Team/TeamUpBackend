@@ -1,18 +1,24 @@
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from announcements.models import Announcement
-from announcements.serializers import AnnouncementSerializer
-from rest_framework.generics import CreateAPIView , GenericAPIView
+from announcements.models import Announcement, AnnouncementJoinRequest
+from announcements.serializers import AnnouncementSerializer, AnnouncementJoinRequestSerializer
 from rest_framework.response import  Response
 from rest_framework import viewsets
+<<<<<<< HEAD
+from rest_framework import status, viewsets, generics
+from accounts.permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.filters import SearchFilter
+from rest_framework.views import APIView
+=======
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
 from accounts.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
+>>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
 
 class AnnouncementPagination(PageNumberPagination):
     page_size = 10
@@ -46,3 +52,49 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
 
         return Response({'data': data}, status=status.HTTP_200_OK)
 
+<<<<<<< HEAD
+
+
+
+class AnnouncementJoinView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, announcement_id):
+        try:
+            announcement = Announcement.objects.get(pk=announcement_id)
+        except Announcement.DoesNotExist:
+            return Response({'error': 'Announcement not found'}, status=404)
+
+        user = request.user
+
+        # Check if user has already requested to join
+        if AnnouncementJoinRequest.objects.filter(user=user, announcement=announcement).exists():
+            return Response({'error': 'You have already requested to join this announcement.'}, status=400)
+
+        join_request = AnnouncementJoinRequest.objects.create(user=user, announcement=announcement)
+        serializer = AnnouncementJoinRequestSerializer(join_request)
+        return Response(serializer.data, status=201)  # Created
+    
+
+    
+class AnnouncementJoinRequestActionView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request, join_request_id, action):
+        try:
+            join_request = AnnouncementJoinRequest.objects.get(pk=join_request_id)
+        except AnnouncementJoinRequest.DoesNotExist:
+            return Response({'error': 'Join request not found'}, status=404)
+
+        if action == 'accept':
+            join_request.status = 'accepted'
+            join_request.save()
+            return Response({'message': 'Join request accepted'}, status=200)
+        elif action == 'reject':
+            join_request.status = 'rejected'
+            join_request.save()
+            return Response({'message': 'Join request rejected'}, status=200)
+        else:
+            return Response({'error': 'Invalid action'}, status=400)
+=======
+>>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880

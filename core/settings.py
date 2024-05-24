@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
+AUTH_USER_MODEL = 'announcemnts.CustomUser'
 ROOT_URLCONF = 'core.urls'
 CORS_ALLOWED_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL=True

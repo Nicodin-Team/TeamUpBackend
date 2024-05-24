@@ -14,3 +14,15 @@ class IsOwnerOrReadOnly(BasePermission):
         return obj.user == request.user
     
 
+<<<<<<< HEAD
+
+class IsManagerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow read-only permissions for any request.
+        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return True
+        
+        # Check if the user is the manager of the announcement.
+        return obj.manager == request.user    
+=======
+>>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
