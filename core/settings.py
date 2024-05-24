@@ -13,7 +13,7 @@ DOMAIN = "http://localhost:8000"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-deploy = False
+deploy = True
 if(deploy):
     # deploy
     SECRET_KEY = "0e0c85d8b3b8a7c59b83dc66fd25f5021136bec8ebc1f1c5330c8f50e7fc4ac826a9dca0e30498d979a5a110f6e9daad1b74"
@@ -184,7 +184,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
