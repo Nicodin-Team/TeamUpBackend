@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from accounts.models import CustomUser
 from django.db import models
-from django_countries.fields import CountryField
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
