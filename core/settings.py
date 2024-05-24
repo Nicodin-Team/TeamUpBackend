@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     #Extera installed apps
+    'blog',
     'accounts',    
     'drf_spectacular',
     'corsheaders', 
