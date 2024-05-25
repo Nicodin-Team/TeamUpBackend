@@ -1,4 +1,11 @@
 {
     "platform": "django",
-    "app": "teamup"
-  }
+    "app": "teamup",
+    
+    "disks": [
+      {
+        "name": "images",
+        "mountTo": "static/images"
+      }
+    ]
+}

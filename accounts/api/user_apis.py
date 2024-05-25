@@ -11,7 +11,6 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.contrib.auth.models import BaseUserManager
 
-<<<<<<< HEAD
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -40,7 +39,6 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
     
-=======
 class UserByTokenAPIView(APIView):
         permission_classes = [IsAuthenticated]
         def get(self, request):
@@ -49,7 +47,6 @@ class UserByTokenAPIView(APIView):
 
             return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
->>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
 class GetUserAPIView(generics.RetrieveAPIView):
     """
     Retrive a single user's information through this API.

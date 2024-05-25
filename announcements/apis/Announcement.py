@@ -81,6 +81,7 @@ class AnnouncementAPIView(GenericAPIView):
 
         announcement.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 class AnnouncementLISTView(viewsets.ModelViewSet):
     
     serializer_class = AnnouncementSerializer 

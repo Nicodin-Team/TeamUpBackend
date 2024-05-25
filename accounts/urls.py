@@ -11,12 +11,6 @@ urlpatterns = [
     path('users/delete/', DeleteUserAPIView.as_view(), name='get_user'),
     path('users/update/', UpdateUserAPIView.as_view(), name='update_user'),
     path('skills/', SkillsAPIViews.as_view(), name='skills'),
-<<<<<<< HEAD
     path('skills/delete/<int:skill_id>', DeleteSkillAPIView.as_view(), name='delete_skill'),  
-   
-]
-=======
-    path('skills/delete/<int:skill_id>', DeleteSkillAPIView.as_view(), name='delete_skill'),    
     path('user/token/',UserByTokenAPIView().as_view(), name='get_user_by_token')
 ]
->>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880

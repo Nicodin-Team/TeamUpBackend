@@ -71,7 +71,7 @@ class AnnouncementJoinView(APIView):
 
     
 class AnnouncementJoinRequestActionView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, join_request_id, action):
         try:

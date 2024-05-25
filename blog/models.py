@@ -15,7 +15,7 @@ class Blog(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=221)
     description = RichTextField()
-    image = models.ImageField(upload_to='blog_image/')
+    image = models.ImageField(upload_to='blog_image/', null=True, blank=True)
     tags = models.ManyToManyField(Tag)
     created_date = models.DateTimeField(auto_now_add=True)
 

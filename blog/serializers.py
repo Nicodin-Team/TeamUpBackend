@@ -26,6 +26,11 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Blog
         fields = ['id', 'author', 'title', 'description', 'image', 'comments', 'created_date']
 
+class BlogSerializerCreate(serializers.ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = ['author', 'title', 'description', 'image']
+
 
 class BlogDetailSerializer(serializers.ModelSerializer):
     subcontent = SubContentSerializer(read_only=True, many=True)
