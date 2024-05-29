@@ -1,19 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from accounts.models import CustomUser
-<<<<<<< HEAD
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-
-
-User = get_user_model()
-=======
 from django.conf import settings
 from django.contrib.auth.models import User
->>>>>>> ff374040649c98582a9ccc1bd5cfe1e56a499880
 
 class Announcement(models.Model):
     user =  models.ForeignKey(CustomUser, related_name='announcements', on_delete=models.CASCADE, null = True)
@@ -32,7 +26,7 @@ class AnnouncementJoinRequest(models.Model):
         (ACCEPTED, 'Accepted'),
         (REJECTED, 'Rejected'),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, related_name='join_requests')
     status = models.CharField(max_length=10, choices=[('PENDING', 'Pending'), ('ACCEPTED', 'Accepted'), ('REJECTED', 'Rejected')], default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
