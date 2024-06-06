@@ -8,7 +8,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 DOMAIN = "http://localhost:8000"
 
-
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -37,15 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'rest_framework',    
 
-    #Extera installed apps
-    'blog',
-    'accounts',    
+    #third-party
     'drf_spectacular',
     'corsheaders', 
-    'resources',
+    'channels',
+
+    #apps
+    'accounts',    
     'announcements',
+    'blog',
+    'chat',    
+    'resources',
+
 ]
 
 MIDDLEWARE = [
@@ -84,6 +89,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 
 
 # Database
