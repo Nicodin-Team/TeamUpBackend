@@ -14,7 +14,6 @@ class ManagerListView(APIView):
         return Response(serializer.data)
 
 class BestManagerView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         managers = Manager.objects.all()
