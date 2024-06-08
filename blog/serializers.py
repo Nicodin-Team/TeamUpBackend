@@ -1,41 +1,55 @@
 from rest_framework import serializers
-from .models import Blog, SubContent, Comment, Tag
+
+from .models import Category, Comment, Post
 
 
-class SubContentSerializer(serializers.ModelSerializer):
+class CategoryReadSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SubContent
-        fields = '__all__'
+        model = Category
+        fields = "__all__"
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class PostReadSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source="author.username", read_only=True)
+    categories = serializers.SerializerMethodField(read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = "__all__"
+
+    def get_categories(self, obj):
+        categories = list(
+            cat.name for cat in obj.categories.get_queryset().only("name")
+        )
+        return categories
+
+    def get_likes(self, obj):
+        likes = list(
+            like.username for like in obj.likes.get_queryset().only("username")
+        )
+        return likes
+
+
+class PostWriteSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Post
+        fields = "__all__"
+
+
+class CommentReadSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source="author.username", read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['author', 'blog', 'message', 'parent_comment', 'top_level_comment_id', 'created_date']
+        fields = "__all__"
 
 
-class TagSerializer(serializers.ModelSerializer):
+class CommentWriteSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
-        model = Tag
-        fields = ['id', 'title']
-
-
-class BlogSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    class Meta:
-        model = Blog
-        fields = ['id', 'author', 'title', 'description', 'image', 'comments', 'created_date']
-
-class BlogSerializerCreate(serializers.ModelSerializer):
-    class Meta:
-        model = Blog
-        fields = ['author', 'title', 'description', 'image']
-
-
-class BlogDetailSerializer(serializers.ModelSerializer):
-    subcontent = SubContentSerializer(read_only=True, many=True)
-    tags = TagSerializer(read_only=True, many=True)
-    comments = CommentSerializer(read_only=True, many=True)
-    class Meta:
-        model = Blog
-        fields = ['id', 'author', 'title', 'description', 'image', 'subcontent','tags', 'comments', 'created_date']
+        model = Comment
+        fields = "__all__"

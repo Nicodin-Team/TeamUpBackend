@@ -1,26 +1,98 @@
-from rest_framework import generics, viewsets
-from blog.models import Blog, Comment, SubContent, Tag
-from blog.serializers import BlogSerializer, BlogDetailSerializer, CommentSerializer, BlogSerializerCreate
-from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-class BlogCRUDAPIView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = BlogSerializer
-    queryset = Blog.objects.all()
+from blog.models import Category, Comment, Post
+from blog.serializers import (
+    CategoryReadSerializer,
+    CommentReadSerializer,
+    CommentWriteSerializer,
+    PostReadSerializer,
+    PostWriteSerializer,
+)
 
-class BlogListAPIView(generics.ListAPIView):
-    #  http://127.0.0.1:8000/blog/list/
-    queryset = Blog.objects.all()
-    serializer_class = BlogSerializerCreate
-
-
-class BlogDetailAPIView(generics.ListAPIView):
-    #  http://127.0.0.1:8000/blog/detail/<int:blog_id>/
-    queryset = Blog.objects.all()
-    serializer_class = BlogDetailSerializer
+from blog.permissions import IsAuthorOrReadOnly
 
 
-class CommentPostAPIView(generics.CreateAPIView):
-    #  http://127.0.0.1:8000/blog/comment_create/
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List and Retrieve post categories
+    """
+
+    queryset = Category.objects.all()
+    serializer_class = CategoryReadSerializer
+    permission_classes = (permissions.AllowAny,)
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    CRUD posts
+    """
+
+    queryset = Post.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return PostWriteSerializer
+
+        return PostReadSerializer
+
+    def get_permissions(self):
+        if self.action in ("create",):
+            self.permission_classes = (permissions.IsAuthenticated,)
+        elif self.action in ("update", "partial_update", "destroy"):
+            self.permission_classes = (IsAuthorOrReadOnly,)
+        else:
+            self.permission_classes = (permissions.AllowAny,)
+
+        return super().get_permissions()
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    """
+    CRUD comments for a particular post
+    """
+
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        post_id = self.kwargs.get("post_id")
+        return res.filter(post__id=post_id)
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return CommentWriteSerializer
+
+        return CommentReadSerializer
+
+    def get_permissions(self):
+        if self.action in ("create",):
+            self.permission_classes = (permissions.IsAuthenticated,)
+        elif self.action in ("update", "partial_update", "destroy"):
+            self.permission_classes = (IsAuthorOrReadOnly,)
+        else:
+            self.permission_classes = (permissions.AllowAny,)
+
+        return super().get_permissions()
+
+
+class LikePostAPIView(APIView):
+    """
+    Like, Dislike a post
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk):
+        user = request.user
+        post = get_object_or_404(Post, pk=pk)
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+
+        else:
+            post.likes.add(user)
+
+        return Response(status=status.HTTP_200_OK)
