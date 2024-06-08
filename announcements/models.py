@@ -12,6 +12,9 @@ class Manager(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="manager")
 
+    def __str__(self):
+        return self.name
+
 class Announcement(models.Model):
     user = models.ForeignKey(CustomUser, related_name='announcements', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
@@ -23,6 +26,9 @@ class Announcement(models.Model):
 class Score(models.Model):
     value = models.IntegerField()
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="scores")
+    
+    def __str__(self):
+        return F"{self.manager.name}-{self.value}"
 
 
 
