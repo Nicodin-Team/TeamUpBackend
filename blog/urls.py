@@ -1,14 +1,17 @@
-from django.urls import path, include
-from .views import BlogListAPIView, BlogDetailAPIView, CommentPostAPIView, BlogCRUDAPIView
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from .views import CategoryViewSet, CommentViewSet, LikePostAPIView, PostViewSet
+
+app_name = "posts"
+
 router = DefaultRouter()
-router.register(prefix=r"", viewset=BlogCRUDAPIView, basename="blogs")
+router.register(r"categories", CategoryViewSet)
+router.register(r"^(?P<post_id>\d+)/comment", CommentViewSet)
+router.register(r"", PostViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('list/', BlogListAPIView.as_view()),
-    path('detail/<int:pk>/', BlogDetailAPIView.as_view()),
-    path('comment_create/', CommentPostAPIView.as_view()),
+    path("", include(router.urls)),
+    path("like/<int:pk>/", LikePostAPIView.as_view(), name="like-post"),
 ]

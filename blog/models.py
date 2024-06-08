@@ -1,59 +1,56 @@
-from django.db import models
-from django.db.models.signals import post_save
-from ckeditor.fields import RichTextField
 from django.conf import settings
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
-class Tag(models.Model):
-    title = models.CharField(max_length=221)
+class Category(models.Model):
+    name = models.CharField(_("Category name"), max_length=100)
 
-    def __str__(self):
-        return self.title
-
-
-class Blog(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=221)
-    description = RichTextField()
-    image = models.ImageField(upload_to='blog_image/', null=True, blank=True)
-    tags = models.ManyToManyField(Tag)
-    created_date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
-class SubContent(models.Model):
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='subcontent')
-    title = models.CharField(max_length=221)
-    image = models.ImageField(upload_to='blog_image')
-    description = RichTextField()
+class Post(models.Model):
+    title = models.CharField(_("Post title"), max_length=250)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="posts",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    categories = models.ManyToManyField(Category, related_name="posts_list", blank=True)
+    body = models.TextField(_("Post body"))
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="post_likes", blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.title} by {self.author.username}"
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
-    message = models.TextField()
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    top_level_comment_id = models.IntegerField(null=True, blank=True)
-    created_date = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="post_comments",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    body = models.TextField(_("Comment body"))
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    @property
-    def get_related_comments(self):
-        qs = Comment.objects.filter(top_level_comment_id=self.id).exclude(id=self.id)
-        if qs:
-            return qs
-        else:
-            return None
+    class Meta:
+        ordering = ("-created_at",)
 
-
-def comment_post_save(instance, sender, created, *args, **kwargs):
-    if created:
-        top_level_comment = instance
-        while top_level_comment.parent_comment:
-            top_level_comment = top_level_comment.parent_comment
-        instance.top_level_comment_id = top_level_comment.id
-        instance.save()
-
-
-post_save.connect(comment_post_save, sender=Comment)
+    def __str__(self):
+        return f"{self.body[:20]} by {self.author.username}"
