@@ -21,12 +21,13 @@ class ManagerSerializer(serializers.ModelSerializer):
             return sum(score.value for score in scores) / len(scores)
         return 0
 
-
 class AnnouncementSerializer(serializers.ModelSerializer):
-    # manager =  ManagerSerializer
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Announcement
-        fields = "__all__"
+        fields = ['id', 'title', 'description', 'number_of_announcements', 'created_at', 'is_active', 'owner']
+
 
 class AnnouncementJoinRequestSerializer(serializers.ModelSerializer):
     announcement_title = serializers.CharField(source='announcement.title', read_only=True)
