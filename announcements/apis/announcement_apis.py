@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
-from accounts.permissions import IsOwnerOrReadOnly
+from announcements.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
 
@@ -31,7 +31,36 @@ class AnnnouncementViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields =  ['title']
     
+    def get_queryset(self):
+        """
+        Optionally restricts the returned announcements to a given title,
+        by filtering against a `search` query parameter in the URL.
+        """
+        queryset = Announcement.objects.all()
+        title = self.request.query_params.get('title', None)
+        if title is not None:
+            queryset = queryset.filter(title__icontains=title)
+        return queryset
 
+    def perform_create(self, serializer):
+        """
+        Set the owner of the announcement to the current user.
+        """
+        serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        """
+        Update the announcement with the provided data.
+        """
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        """
+        Delete the announcement.
+        """
+        instance.delete()
+
+    
 class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     """
     User can get the his/her own announcements.

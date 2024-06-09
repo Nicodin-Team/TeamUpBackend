@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from announcements.models import Announcement
-
+from .models import Announcement
 
 class AnnouncementSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Announcement
-        fields = "__all__"
+        fields = ['id', 'title', 'description', 'number_of_announcements', 'created_at', 'is_active', 'owner']
