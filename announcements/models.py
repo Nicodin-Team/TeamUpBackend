@@ -16,12 +16,15 @@ class Manager(models.Model):
         return self.name
 
 class Announcement(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='announcements', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    created_at = models.DateField(auto_now_add = True,blank=True, null=True)
-    active = models.BooleanField(default=True)
-    # manager = models.OneToOneField(Manager, on_delete=models.CASCADE, null = True)
+    description = models.TextField()
+    number_of_announcements = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='announcements')
+
+    def __str__(self):
+        return self.title
 
 class Score(models.Model):
     value = models.IntegerField()
