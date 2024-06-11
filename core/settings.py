@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     #Extera installed apps
+    'blog',
     'accounts',    
     'drf_spectacular',
     'corsheaders', 
@@ -177,6 +178,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
     ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
 }
 
 SIMPLE_JWT = {
