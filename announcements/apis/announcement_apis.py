@@ -5,12 +5,17 @@ from announcements.models import Announcement, AnnouncementJoinRequest
 from announcements.serializers import AnnouncementSerializer, AnnouncementJoinRequestSerializer
 from rest_framework.response import  Response
 from rest_framework import viewsets
-
 from rest_framework import status, viewsets, generics
 from announcements.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action
+from rest_framework import status, viewsets, generics
+from accounts.permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
 
 
 class AnnouncementPagination(PageNumberPagination):
@@ -121,3 +126,16 @@ class AnnouncementJoinRequestActionView(APIView):
         else:
             return Response({'error': 'Invalid action'}, status=400)
 
+
+class AnnouncementJoinRequestListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, announcement_id):
+        try:
+            announcement = Announcement.objects.get(pk=announcement_id)
+        except Announcement.DoesNotExist:
+            return Response({'error': 'Announcement not found'}, status=404)
+
+        join_requests = AnnouncementJoinRequest.objects.filter(announcement=announcement)
+        serializer = AnnouncementJoinRequestSerializer(join_requests, many=True)
+        return Response(serializer.data, status=200)

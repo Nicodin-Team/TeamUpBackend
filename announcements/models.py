@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
+from django.conf import settings
+from django.contrib.auth.models import User
 
 
 class Manager(models.Model):
