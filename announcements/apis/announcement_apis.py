@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
 from rest_framework import status, viewsets, generics
-from accounts.permissions import IsOwnerOrReadOnly
+from announcements.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
 
@@ -76,7 +76,7 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     pagination_class = AnnouncementPagination
     def get(self, request):
         user = request.user
-        announcements = Announcement.objects.filter(user=user).order_by('-created_at')
+        announcements = Announcement.objects.filter(owner=user).order_by('-created_at')
         data = self.serializer_class(announcements, many=True).data
 
         return Response({'data': data}, status=status.HTTP_200_OK)
