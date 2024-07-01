@@ -18,7 +18,6 @@ class Manager(models.Model):
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    number_of_announcements = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='announcements')

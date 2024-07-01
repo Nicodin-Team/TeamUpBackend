@@ -26,7 +26,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Announcement
-        fields = ['id', 'title', 'description', 'number_of_announcements', 'created_at', 'is_active', 'owner']
+        fields = ['id', 'title', 'description', 'created_at', 'is_active', 'owner']
 
 
 class AnnouncementJoinRequestSerializer(serializers.ModelSerializer):

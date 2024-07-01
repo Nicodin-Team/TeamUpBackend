@@ -71,7 +71,7 @@ class MyAnnouncementsAPIView(generics.RetrieveAPIView):
     pagination_class = AnnouncementPagination
     def get(self, request):
         user = request.user
-        announcements = Announcement.objects.filter(user=user).order_by('-created_at')
+        announcements = Announcement.objects.filter(owner=user).order_by('-created_at')
         data = self.serializer_class(announcements, many=True).data
 
         return Response({'data': data}, status=status.HTTP_200_OK)
