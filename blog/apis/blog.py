@@ -15,6 +15,10 @@ from blog.serializers import (
 from blog.permissions import IsAuthorOrReadOnly
 
 
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     List and Retrieve post categories
@@ -23,6 +27,13 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategoryReadSerializer
     permission_classes = (permissions.AllowAny,)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            return super().retrieve(request, *args, **kwargs)
+        except Category.DoesNotExist:
+            raise NotFound(detail="Category not found", code=status.HTTP_404_NOT_FOUND)
+
 
 
 class PostViewSet(viewsets.ModelViewSet):
