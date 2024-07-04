@@ -38,12 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    
+    #third-party
+    'corsheaders', 
+    'drf_spectacular',
 
     #Extera installed apps
     'blog',
     'accounts',    
-    'drf_spectacular',
-    'corsheaders', 
     'resources',
     'announcements',
 ]
