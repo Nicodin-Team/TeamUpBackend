@@ -30,7 +30,7 @@ class AnnnouncementViewSet(viewsets.ModelViewSet):
     Through these apis users can: \n- updata \n- creation \n- deletion \n- listing \n- retreive \n the announcements objects.\n
     Operations that are not in SafeMethods need owner permission.
     """
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     filter_backends = [SearchFilter]
