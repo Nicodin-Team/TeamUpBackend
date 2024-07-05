@@ -1,6 +1,6 @@
 from rest_framework import generics
-from resources.models import City
-from resources.serializers import CitySerializer
+from resources.models import City, SkillName, SoftSkillName
+from resources.serializers import CitySerializer, SkillNameSerializer
 
 class CitiesAPIView(generics.ListAPIView):
     """
@@ -8,3 +8,17 @@ class CitiesAPIView(generics.ListAPIView):
     """
     queryset = City.objects.all()
     serializer_class = CitySerializer
+
+class SkillsAPIView(generics.ListAPIView):
+    """
+    Lists the skill set
+    """
+    queryset = SkillName.objects.all()
+    serializer_class = SkillNameSerializer
+
+class SoftSkillsAPIView(generics.ListAPIView):
+    """
+    Lists the soft skill set
+    """
+    queryset = SoftSkillName.objects.all()
+    serializer_class = SkillNameSerializer

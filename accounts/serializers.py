@@ -21,8 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['photo', 'bio', 'username', 'first_name', 'last_name', 'created_at', 'gender', 'age', 'country', 'city']
-
+        fields = ['id', 'photo', 'bio', 'username', 'first_name', 'last_name', 'created_at', 'gender', 'age', 'country', 'city']
+        read_only_fields = ['id']
+    
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,3 +49,8 @@ class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
         
+
+
+
+
+
